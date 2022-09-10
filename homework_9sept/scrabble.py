@@ -19,20 +19,17 @@ def random_tiles(user_1_name, user_2_name, num_letters, letters_list):
     print(f"{user_2_name} - буквы {list(user_2_tiles)}")
     return user_1_tiles, user_2_tiles
 
-def chek_word(user_word, user_tiles, turn_counter):
+def check_word(user_word, user_tiles, turn_counter):
     '''
     проверяет, есть ли у пользователя нужные буквы для слова, которое он ввёл
     '''
     for letter in list(user_word):
         if letter not in user_tiles:
-            continue
-        else:
-            return True
-    print(f"У вас нет такой буквы {letter}")
-    turn_counter += 1
-    return False
+            print(f"У вас нет такой буквы {letter}")
+            return False
+    return True
 
-def real_word_chek(user_word, user_tiles):
+def real_word_check(user_word, user_tiles):
     '''
     проверяет, существует ли слово, набранное пользователем с помощью файла русских слов, добавляет букву, если такого слова нет
     '''
@@ -65,9 +62,9 @@ def turn(user_name, user_tiles, scores, game, turn_counter):
             break
         else:
             # вызываю функцию, которая проверяет слово, введённое игроком. Если функция возвращает False - просим ввести слово заново
-            if chek_word(user_word, user_tiles, turn_counter):
+            if check_word(user_word, user_tiles, turn_counter):
                 # функция, которая проверяет, есть ли слово в файлике со словами
-                if real_word_chek(user_word, user_tiles):
+                if real_word_check(user_word, user_tiles):
                     print("Отличное слово")
                     # добавляем баллы, убираем использованные буквы, добавляем столько же новых
                     scores += len(user_word)
@@ -84,9 +81,7 @@ def turn(user_name, user_tiles, scores, game, turn_counter):
                 else:
                     turn_counter += 1
                     break
-            else:
-                turn_counter += 1
-                break
+
     return scores, game
 
 if __name__ == "__main__":
