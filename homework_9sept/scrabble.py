@@ -15,6 +15,8 @@ def random_tiles(user_1_name, user_2_name, num_letters, letters_list):
     random.shuffle(letters_list)
     user_1_tiles = letters_list[:7]
     user_2_tiles = letters_list[8:15]
+    del letters_list[:7]
+    del letters_list[8:15]
     print(f"{user_1_name} - буквы {list(user_1_tiles)}")
     print(f"{user_2_name} - буквы {list(user_2_tiles)}")
     return user_1_tiles, user_2_tiles
@@ -44,6 +46,7 @@ def real_word_check(user_word, user_tiles):
         # добавить одну букву игроку
         random.shuffle(letters_list)
         user_tiles.extend(letters_list[0])
+        del letters_list[0]
         print(f"Добавляю букву {letters_list[0]}")
         return False
 
@@ -71,6 +74,7 @@ def turn(user_name, user_tiles, scores, game, turn_counter):
                     print(f"У игрока {user_name} сейчас {scores} б.")
                     random.shuffle(letters_list)
                     user_tiles.extend(letters_list[:len(user_word)])
+                    del letters_list[:len(user_word)]
                     for letter in list(user_word):
                         i = 0
                         if letter in user_tiles:
@@ -109,6 +113,10 @@ if __name__ == "__main__":
     if scores_1 > scores_2:
         print(f"Победитель {user_1_name}")
         print(f"Счёт {scores_1} : {scores_2}")
+    elif scores_1 == scores_2:
+        print(f"Ничья")
+        print(f"Счёт {scores_1} : {scores_2}")
     else:
         print(f"Победитель {user_2_name}")
         print(f"Счёт {scores_2} : {scores_1}")
+
