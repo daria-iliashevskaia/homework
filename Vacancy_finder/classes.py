@@ -2,7 +2,7 @@ from utils import *
 import requests
 from bs4 import BeautifulSoup as BS
 from abc import ABC, abstractmethod
-import json
+
 
 
 class Engine(ABC):
@@ -10,20 +10,20 @@ class Engine(ABC):
     Абстрактный класс
     """
     @abstractmethod
-    def get_request(self):
+    def get_request(self, *args):
         pass
 
 
 class HH(Engine):
 
-    def get_request(self) -> list:
+    def get_request(self, key_word: str) -> list:
         """
         Возвращает список с данными о вакансии с HH
         """
         job_list = []
         for i in range(70):    # количество страниц
             url = 'https://api.hh.ru/vacancies'
-            par = {"text": "python", 'area': '113', 'per_page': '10', 'page': i}
+            par = {"text": key_word, 'area': '113', 'per_page': '10', 'page': i}
             response = requests.get(url, params=par)
             response_json = response.json()["items"]
             job_list.extend(response_json)
@@ -32,7 +32,7 @@ class HH(Engine):
 
 class Superjob(Engine):
 
-    def get_request(self) -> list:
+    def get_request(self, key_word: str) -> list:
         """
         Возвращает список с данными о вакансии с HH
         """
@@ -68,7 +68,7 @@ class Vacancy:
                f"Описание: {self.description}\n" \
                f"_________________________________\n"
 
-    def parse_vacancy_hh(self):
+    def parse_vacancy_hh(self, key_word: str):
         """
         Записывает значения полей объекта класса Vacancy в соответствии с найденной вакансией,
         меняет переменные полей согласно списку,
@@ -76,7 +76,7 @@ class Vacancy:
         записывает этот объект в файл с помощью __repr__
         """
         hh_vacances = HH()
-        job_list = hh_vacances.get_request()
+        job_list = hh_vacances.get_request(key_word)
         universal_file_list = universal_file_hh(job_list)
 
         file_vacances_list = []
@@ -86,7 +86,7 @@ class Vacancy:
             self.url = job["url"]
             self.salary = job["salary"]
             self.description = job["description"]
-            file_vacances_list.append(str(v))
+            file_vacances_list.append(str(self))
 
             with open("vacances.txt", "w", encoding="utf-8") as file:
                 # записываю значения объектов вакансий с hh в файл
@@ -94,14 +94,6 @@ class Vacancy:
                     file.write(vacancy)
 
 
-
-
-v = Vacancy()
-v.parse_vacancy_hh()
-
-
 # s = Superjob()
 # s.get_request()
-
-
 
