@@ -1,8 +1,8 @@
-from utils import *
+from utils import universal_file_hh
 import requests
 from bs4 import BeautifulSoup as BS
 from abc import ABC, abstractmethod
-import re
+
 
 
 class Engine(ABC):
@@ -51,14 +51,14 @@ class Superjob(Engine):
             list_of_descriptions += descriptions
             salaries = soup.find_all("span", class_="_2eYAG _1nqY_ _249GZ _1jb_5 _1dIgi")
             list_of_salaries += salaries
+
         job_list_sj = []
 
         for i in range(len(list_of_names)):
-            sal = re.findall(r'\d|-', list_of_salaries[i].text)
-            sal_join = "".join(sal)
+            sal = list_of_salaries[i].text.replace("\xa0", " ")
             dict = {
                     "name": list_of_names[i].text,
-                    "salary": sal_join,
+                    "salary": sal,
                     "url": "https://russia.superjob.ru/" + list_of_names[i].a["href"],
                     "description": list_of_descriptions[i].text
                     }
@@ -92,21 +92,23 @@ class Vacancy:
         job_list = hh_vacances.get_request(key_word)
         universal_file_list = universal_file_hh(job_list)
 
-        file_vacances_list = []
+        file_vacances_list_hh = []
         # создаю список со строковыми значениями объектов вакансий
         for job in universal_file_list:
             self.title = job["name"]
             self.url = job["url"]
             self.salary = job["salary"]
             self.description = job["description"]
-            file_vacances_list.append(str(self))
+            file_vacances_list_hh.append(str(self))
 
             with open("vacances.txt", "w", encoding="utf-8") as file:
                 # записываю значения объектов вакансий с hh в файл
-                for vacancy in file_vacances_list:
+                for vacancy in file_vacances_list_hh:
                     file.write(vacancy)
 
-    def parse_vacancy_sj(self, key_word: str):
+        return file_vacances_list_hh
+
+    def parse_vacancy_sj(self, key_word: str) -> list:
         """
         Записывает значения полей объекта класса Vacancy в соответствии с найденной вакансией,
         меняет переменные полей согласно списку,
@@ -117,7 +119,7 @@ class Vacancy:
         universal_file_list = sj_vacances.get_request(key_word)
         # создаю объект класса SuperJob, чтобы создать список с данными формата
         # {name: , "salary": , "url": , "description": }
-        file_vacances_list = []
+        file_vacances_list_sj = []
         # создаю список с вакансиями в виде строк, чтобы его записать в текстовый
 
         for job in universal_file_list:
@@ -125,12 +127,12 @@ class Vacancy:
             self.url = job["url"]
             self.salary = job["salary"]
             self.description = job["description"]
-            file_vacances_list.append(str(self))
+            file_vacances_list_sj.append(str(self))
 
             with open("vacances.txt", "a", encoding="utf-8") as file:
                 # записываю значения объектов вакансий с SJ в файл
-                for vacancy in file_vacances_list:
+                for vacancy in file_vacances_list_sj:
                     file.write(vacancy)
 
-
+        return file_vacances_list_sj
 
