@@ -21,7 +21,7 @@ class HH(Engine):
         Возвращает список с данными о вакансии с HH
         """
         job_list = []
-        for i in range(70):    # количество страниц
+        for i in range(50):    # количество страниц
             url = 'https://api.hh.ru/vacancies'
             par = {"text": key_word, 'area': '113', 'per_page': '10', 'page': i}
             response = requests.get(url, params=par)
@@ -36,21 +36,31 @@ class Superjob(Engine):
         """
         Возвращает список с данными о вакансии с HH
         """
-        key_word = "python"
-        num_page = 2
-        url = f"https://russia.superjob.ru/vacancy/search/?keywords={key_word}&page={num_page}"
-        response = requests.get(url)
-        soup = BS(response.text, "lxml")
-        # job_list_superjob = soup.findAll("div", class_="f-test-search-result-item")
-        # print(job_list_superjob[0])
+        list_of_names = []
+        list_of_descriptions = []
+        list_of_salaries = []
+        for i in range(3):
+            num_page = i + 1
+            url = f"https://russia.superjob.ru/vacancy/search/?keywords={key_word}&page={num_page}"
+            response = requests.get(url)
+            soup = BS(response.text, "lxml")
 
-        name = soup.find_all("span", class_="_9fIP1 _249GZ _1jb_5 QLdOc")
-        description = soup.find_all("span", class_="_1Nj4W _249GZ _1jb_5 _1dIgi _3qTky")
-        salary = soup.find_all("span", class_="_2eYAG _1nqY_ _249GZ _1jb_5 _1dIgi")
-
-        # print(name)
-        # print(description)
-        # print(salary)
+            names = soup.find_all("span", class_="_9fIP1 _249GZ _1jb_5 QLdOc")
+            list_of_names += names
+            descriptions = soup.find_all("span", class_="_1Nj4W _249GZ _1jb_5 _1dIgi _3qTky")
+            list_of_descriptions += descriptions
+            salaries = soup.find_all("span", class_="_2eYAG _1nqY_ _249GZ _1jb_5 _1dIgi")
+            list_of_salaries += salaries
+        job_list_sj = []
+        for i in range(len(list_of_names)):
+            dict = {
+                    "name": list_of_names[i].text,
+                    "salary": list_of_salaries[i].text,
+                    "url": "https://russia.superjob.ru/" + list_of_names[i].a["href"],
+                    "description": list_of_descriptions[i].text
+                    }
+            job_list_sj.append(dict.copy())
+        return job_list_sj
 
 
 class Vacancy:
@@ -93,7 +103,28 @@ class Vacancy:
                 for vacancy in file_vacances_list:
                     file.write(vacancy)
 
+    def parse_vacancy_sj(self, key_word: str):
+        """
+        Записывает значения полей объекта класса Vacancy в соответствии с найденной вакансией,
+        меняет переменные полей согласно списку,
+        создаёт объект на каждую вакансию,
+        записывает этот объект в файл с помощью __repr__
+        """
+        sj_vacances = Superjob()
+        universal_file_list = sj_vacances.get_request(key_word)
+        file_vacances_list = []
+        # создаю список со строковыми значениями объектов вакансий
+        for job in universal_file_list:
+            self.title = job["name"]
+            self.url = job["url"]
+            self.salary = job["salary"]
+            self.description = job["description"]
+            file_vacances_list.append(str(self))
 
-# s = Superjob()
-# s.get_request()
+            with open("vacances.txt", "a", encoding="utf-8") as file:
+                # записываю значения объектов вакансий с hh в файл
+                for vacancy in file_vacances_list:
+                    file.write(vacancy)
+
+
 
