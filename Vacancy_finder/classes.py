@@ -2,7 +2,7 @@ from utils import *
 import requests
 from bs4 import BeautifulSoup as BS
 from abc import ABC, abstractmethod
-
+import re
 
 
 class Engine(ABC):
@@ -34,7 +34,7 @@ class Superjob(Engine):
 
     def get_request(self, key_word: str) -> list:
         """
-        Возвращает список с данными о вакансии с HH
+        Возвращает список с данными о вакансии с SJ
         """
         list_of_names = []
         list_of_descriptions = []
@@ -52,10 +52,13 @@ class Superjob(Engine):
             salaries = soup.find_all("span", class_="_2eYAG _1nqY_ _249GZ _1jb_5 _1dIgi")
             list_of_salaries += salaries
         job_list_sj = []
+
         for i in range(len(list_of_names)):
+            sal = re.findall(r'\d|-', list_of_salaries[i].text)
+            sal_join = "".join(sal)
             dict = {
                     "name": list_of_names[i].text,
-                    "salary": list_of_salaries[i].text,
+                    "salary": sal_join,
                     "url": "https://russia.superjob.ru/" + list_of_names[i].a["href"],
                     "description": list_of_descriptions[i].text
                     }
@@ -112,8 +115,11 @@ class Vacancy:
         """
         sj_vacances = Superjob()
         universal_file_list = sj_vacances.get_request(key_word)
+        # создаю объект класса SuperJob, чтобы создать список с данными формата
+        # {name: , "salary": , "url": , "description": }
         file_vacances_list = []
-        # создаю список со строковыми значениями объектов вакансий
+        # создаю список с вакансиями в виде строк, чтобы его записать в текстовый
+
         for job in universal_file_list:
             self.title = job["name"]
             self.url = job["url"]
@@ -122,7 +128,7 @@ class Vacancy:
             file_vacances_list.append(str(self))
 
             with open("vacances.txt", "a", encoding="utf-8") as file:
-                # записываю значения объектов вакансий с hh в файл
+                # записываю значения объектов вакансий с SJ в файл
                 for vacancy in file_vacances_list:
                     file.write(vacancy)
 
