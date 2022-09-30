@@ -1,8 +1,8 @@
-from utils import universal_file_hh
+import re
+
 import requests
 from bs4 import BeautifulSoup as BS
 from abc import ABC, abstractmethod
-
 
 
 class Engine(ABC):
@@ -16,7 +16,7 @@ class Engine(ABC):
 
 class HH(Engine):
 
-    def get_request(self, key_word: str) -> list:
+    def get_request(self, key_word: str):
         """
         Возвращает список с данными о вакансии с HH
         """
@@ -27,7 +27,21 @@ class HH(Engine):
             response = requests.get(url, params=par)
             response_json = response.json()["items"]
             job_list.extend(response_json)
-        return job_list
+
+        universal_file = {}
+        job_list_hh = []
+
+        for el in job_list:
+            universal_file["name"] = el["name"]
+            if el["salary"] is None:
+                universal_file["salary"] = "не указана"
+            else:
+                universal_file["salary"] = str(el["salary"]["from"])
+            universal_file["url"] = el["alternate_url"]
+            universal_file["description"] = str(el["snippet"]["requirement"]) + str(el["snippet"]["responsibility"])
+            job_list_hh.append(universal_file.copy())
+
+        return job_list_hh
 
 
 class Superjob(Engine):
@@ -47,7 +61,7 @@ class Superjob(Engine):
 
             names = soup.find_all("span", class_="_9fIP1 _249GZ _1jb_5 QLdOc")
             list_of_names += names
-            descriptions = soup.find_all("span", class_="_1Nj4W _249GZ _1jb_5 _1dIgi _3qTky")
+            descriptions = soup.find_all('div', class_='_2d_Of _2J-3z _3B5DQ')
             list_of_descriptions += descriptions
             salaries = soup.find_all("span", class_="_2eYAG _1nqY_ _249GZ _1jb_5 _1dIgi")
             list_of_salaries += salaries
@@ -55,14 +69,17 @@ class Superjob(Engine):
         job_list_sj = []
 
         for i in range(len(list_of_names)):
-            sal = list_of_salaries[i].text.replace("\xa0", " ")
+            sal = list_of_salaries[i].text.replace("\xa0", "")
+            # sal_clear = re.findall(r'(^\d{4,6})|[а-я]{2}(\d{4,6})', sal)
+            sal_clear = re.findall(r'\d{4,6}', sal)
             dict = {
                     "name": list_of_names[i].text,
-                    "salary": sal,
+                    "salary": sal_clear,
                     "url": "https://russia.superjob.ru/" + list_of_names[i].a["href"],
                     "description": list_of_descriptions[i].text
                     }
             job_list_sj.append(dict.copy())
+
         return job_list_sj
 
 
@@ -75,11 +92,7 @@ class Vacancy:
         self.description = None
 
     def __repr__(self) -> str:
-        return f"Название вакансии: {self.title}\n" \
-               f"Ссылка на вакансию: {self.url}\n" \
-               f"Зарплата: {self.salary}\n" \
-               f"Описание: {self.description}\n" \
-               f"_________________________________\n"
+        return f"{self.title}|{self.url}|{self.salary}|{self.description}\n"
 
     def parse_vacancy_hh(self, key_word: str):
         """
@@ -89,8 +102,7 @@ class Vacancy:
         записывает этот объект в файл с помощью __repr__
         """
         hh_vacances = HH()
-        job_list = hh_vacances.get_request(key_word)
-        universal_file_list = universal_file_hh(job_list)
+        universal_file_list = hh_vacances.get_request(key_word)
 
         file_vacances_list_hh = []
         # создаю список со строковыми значениями объектов вакансий

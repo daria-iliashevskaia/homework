@@ -1,20 +1,33 @@
+from operator import itemgetter
 
-def universal_file_hh(file_to_convert) -> list:
+
+def work_with_file():
     """
-    Форматирует передаваемый файл в список название, зарплата, ссылка, описание
+    Выгружает данные файла vacances.txt
     """
-    universal_file = {}
-    universal_file_list = []
+    with open("vacances.txt", "r", encoding='utf-8') as file:
+        data = file.read().split("\n")
+    return data
 
-    for el in file_to_convert:
-        universal_file["name"] = el["name"]
-        if el["salary"] is None:
-            universal_file["salary"] = "не указана"
-        else:
-            universal_file["salary"] = "от " + str(el["salary"]["from"])
-        universal_file["url"] = el["alternate_url"]
-        universal_file["description"] = str(el["snippet"]["requirement"]) + str(el["snippet"]["responsibility"])
-        universal_file_list.append(universal_file.copy())
 
-    return universal_file_list
+def top_ten(some_data):
+    """
+    Выводит топ 10 вакансий по зарплате
+    """
+    dt_list = []
+    for dt in some_data:
+        dt_to_list = dt.split("|")
+        try:
+            dt_to_list[2] = int(dt_to_list[2])
+        except:
+            continue
+        dt_list.append(dt_to_list)
+
+    dt_sorted = sorted(dt_list, key=itemgetter(2), reverse=True)
+    for i in range(10):
+        for item in dt_sorted[i]:
+            print(item)
+        print("="*100)
+
+
 
