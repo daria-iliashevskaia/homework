@@ -6,6 +6,7 @@ def connect_bd():
     """
     Подключает к PGadmin с уже созданной БД
     """
+
     try:
         connection = psycopg2.connect(user="postgres",
                                       password="19IDD93a",
@@ -19,10 +20,11 @@ def connect_bd():
         print("Ошибка при работе с PostgreSQL", error)
 
 
-def create_req(cursor, request):
+def create_req(cursor, request: str):
     """
     Создаёт запрос к БД и выводит результат
     """
+
     try:
         cursor.execute(request)
 
