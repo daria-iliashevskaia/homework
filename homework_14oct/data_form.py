@@ -33,6 +33,7 @@ def list_form(reader: list, text_index: int) -> set:
 
 
 def animal_dicts_form() -> list:
+
     """
     Формирует словарь с нужными данными для таблицы "animals"
     """
@@ -62,6 +63,7 @@ def animal_dicts_form() -> list:
 
 
 def shelter_dicts_form() -> list:
+
     """
     Формирует словарь с нужными данными для таблицы "shelter_info"
     """
@@ -78,9 +80,9 @@ def shelter_dicts_form() -> list:
     for animal in shelter_list:
 
         shelter_dict['index'] = animal['index']
-        shelter_dict['animal_id'] = animal['animal_id']
-        shelter_dict['outcome_subtype'] = animal['outcome_subtype']
-        shelter_dict['outcome_type'] = animal['outcome_type']
+        shelter_dict['fk_animal_id'] = animal['animal_id']
+        shelter_dict['fk_outcome_subtype'] = animal['outcome_subtype']
+        shelter_dict['fk_outcome_type'] = animal['outcome_type']
         shelter_dict['outcome_month'] = animal['outcome_month']
         shelter_dict['outcome_year'] = animal['outcome_year']
         shelter_dict['age_upon_outcome'] = animal['age_upon_outcome']
