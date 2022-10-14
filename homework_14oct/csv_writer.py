@@ -23,7 +23,7 @@ def csv_animal_dict_writer(animal_dict_list: list, type_dict: dict, breed_dict: 
     Записывает список словарей в csv файл и заменяет значения на индексы внешнего ключа в таблице animal_dict
     """
 
-    csv_columns = ['animal_id', 'fk_type', 'animal_name', 'fk_breed', 'fk_colour_1', 'fk_colour_2', 'date_of_birth']
+    csv_columns = ['id_animal', 'animal_id', 'fk_type', 'animal_name', 'fk_breed', 'fk_colour_1', 'fk_colour_2', 'date_of_birth']
     with open('animal_dict.csv', 'w', newline='', encoding='utf-8') as f:
         sd = csv.DictWriter(f, fieldnames=csv_columns)
         sd.writeheader()

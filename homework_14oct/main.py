@@ -19,6 +19,15 @@ def main():
         create_shelter_table(cursor)
 
         # заполняю таблицы данными из csv файлов
+        # (этот блок кода пригодится только если таблицы не заполнены)
+
+        # insert_breeds_info(cursor)
+        # insert_type_info(cursor)
+        # insert_colour_info(cursor)
+        # insert_outcome_subtype_info(cursor)
+        # insert_outcome_type_info(cursor)
+        insert_animal_info(cursor)
+
 
         cursor.close()
 

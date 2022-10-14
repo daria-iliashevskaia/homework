@@ -1,5 +1,6 @@
 import psycopg2
 from psycopg2 import Error
+import csv
 
 
 def connect_bd():
@@ -144,7 +145,8 @@ def create_animal_table(cursor):
     """
 
     request = """CREATE TABLE IF NOT EXISTS animal_dict(
-                animal_id VARCHAR(20) PRIMARY KEY,
+                id_animal INTEGER PRIMARY KEY,
+                animal_id VARCHAR(20),
                 fk_type INTEGER,
                 animal_name VARCHAR(20),
                 fk_breed INTEGER,
@@ -171,13 +173,13 @@ def create_shelter_table(cursor):
 
     request = """CREATE TABLE IF NOT EXISTS shelter_info(
                 index INTEGER PRIMARY KEY,
-                fk_animal_id VARCHAR(20),
+                fk_animal_id INTEGER,
                 fk_outcome_subtype INTEGER,
                 fk_outcome_type INTEGER,
                 outcome_month INTEGER,
                 outcome_year INTEGER,
                 age_upon_outcome VARCHAR(40),
-                    FOREIGN KEY (fk_animal_id) REFERENCES animal_dict(animal_id),
+                    FOREIGN KEY (fk_animal_id) REFERENCES animal_dict(id_animal),
                     FOREIGN KEY (fk_outcome_subtype) REFERENCES outcome_subtype(id_outcome_subtype),
                     FOREIGN KEY (fk_outcome_type) REFERENCES outcome_type(id_outcome_type)                                   
                 ) 
@@ -193,11 +195,127 @@ def insert_breeds_info(cursor):
     """
     Заполняет таблицу breed_dict информацией из файла breed_dict.csv
     """
+    with open("breed_dict.csv", "r", encoding='utf-8') as f:
+        reader = list(csv.reader(f))
 
-    request = """INSERT INTO breed_dict(id_breed, name_breed)
-                 VALUES (''), (''), ('')
+    val = ', '.join(map(str, reader))
+    val = val.replace("[", "(")
+    val = val.replace("]", ")")
+
+    request = f"""INSERT INTO breed_dict(id_breed, name_breed)
+                 VALUES {val}
                 """
     try:
         cursor.execute(request)
     except (Exception, Error) as error:
-        print("Таблица shelter_info не создана", error)
+        print("Проблема с загрузкой данных", error)
+
+
+def insert_type_info(cursor):
+
+    """
+    Заполняет таблицу type_dict информацией из файла breed_dict.csv
+    """
+    with open("type_dict.csv", "r", encoding='utf-8') as f:
+        reader = list(csv.reader(f))
+
+    val = ', '.join(map(str, reader))
+    val = val.replace("[", "(")
+    val = val.replace("]", ")")
+
+    request = f"""INSERT INTO type_dict(id_type, name_type)
+                 VALUES {val}
+                """
+    try:
+        cursor.execute(request)
+    except (Exception, Error) as error:
+        print("Проблема с загрузкой данных", error)
+
+def insert_colour_info(cursor):
+
+    """
+    Заполняет таблицу colour_dict информацией из файла breed_dict.csv
+    """
+    with open("colour_dict.csv", "r", encoding='utf-8') as f:
+        reader = list(csv.reader(f))
+
+    val = ', '.join(map(str, reader))
+    val = val.replace("[", "(")
+    val = val.replace("]", ")")
+
+    request = f"""INSERT INTO colour_dict(id_colour, name_colour)
+                 VALUES {val}
+                """
+    try:
+        cursor.execute(request)
+    except (Exception, Error) as error:
+        print("Проблема с загрузкой данных", error)
+
+
+def insert_outcome_subtype_info(cursor):
+
+    """
+    Заполняет таблицу outcome_subtype информацией из файла breed_dict.csv
+    """
+    with open("outcome_subtype.csv", "r", encoding='utf-8') as f:
+        reader = list(csv.reader(f))
+
+    val = ', '.join(map(str, reader))
+    val = val.replace("[", "(")
+    val = val.replace("]", ")")
+
+    request = f"""INSERT INTO outcome_subtype(id_outcome_subtype, name_outcome_subtype)
+                 VALUES {val}
+                """
+    try:
+        cursor.execute(request)
+    except (Exception, Error) as error:
+        print("Проблема с загрузкой данных", error)
+
+
+def insert_outcome_type_info(cursor):
+
+    """
+    Заполняет таблицу outcome_type информацией из файла breed_dict.csv
+    """
+    with open("outcome_type.csv", "r", encoding='utf-8') as f:
+        reader = list(csv.reader(f))
+
+    val = ', '.join(map(str, reader))
+    val = val.replace("[", "(")
+    val = val.replace("]", ")")
+
+    request = f"""INSERT INTO outcome_type(id_outcome_type, name_outcome_type)
+                 VALUES {val}
+                """
+    try:
+        cursor.execute(request)
+    except (Exception, Error) as error:
+        print("Проблема с загрузкой данных", error)
+
+def insert_animal_info(cursor):
+
+    """
+    Заполняет таблицу animal_dict информацией из файла breed_dict.csv
+    """
+    with open("animal_dict.csv", "r", encoding='utf-8') as f:
+        reader = list(csv.reader(f))
+
+    val = ', '.join(map(str, reader))
+    val = val.replace("[", "(")
+    val = val.replace("]", ")")
+
+    request = f"""INSERT INTO animal_dict(id_animal, 
+                                          animal_id, 
+                                          fk_type, 
+                                          animal_name, 
+                                          fk_breed, 
+                                          fk_colour_1, 
+                                          fk_colour_2, 
+                                          date_of_birth)
+                 VALUES {val}
+                """
+    try:
+        cursor.execute(request)
+    except (Exception, Error) as error:
+        print("Проблема с загрузкой данных", error)

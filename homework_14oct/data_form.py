@@ -48,7 +48,7 @@ def animal_dicts_form() -> list:
             animal_list.append(row)
 
     for animal in animal_list:
-
+        animals_dict['id_animal'] = int(animal['index'])
         animals_dict['animal_id'] = animal['animal_id']
         animals_dict['fk_type'] = animal['animal_type']
         animals_dict['animal_name'] = animal['name']
