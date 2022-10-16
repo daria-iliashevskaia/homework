@@ -356,13 +356,30 @@ def insert_shelter_info(cursor):
 
 
 def user(cursor, privileges: str, username: str):
+    """
+    Создаёт пользователя с указанным именем и дефолтным паролем,
+    даёт ему указанные права.
+    """
 
     request = f"""CREATE USER {username} WITH PASSWORD '1234'"""
-    request2 = f"""GRANT {privileges} ON ALL TABLES in SCHEMA Shelter to {username}"""
+    request2 = f"""GRANT {privileges} ON ALL TABLES in SCHEMA public to {username}"""
+
     try:
         cursor.execute(request)
         print("Пользователь создан")
         cursor.execute(request2)
         print("Права переданы")
+    except (Exception, Error) as error:
+        print(f"Не получилось создать юзера {username}", error)
+
+
+def drop_user(cursor, username: str):
+
+    request = f"""DROP USER {username}"""
+
+    try:
+        cursor.execute(request)
+        print("Пользователь удалён")
+
     except (Exception, Error) as error:
         print(f"Не получилось создать юзера {username}", error)

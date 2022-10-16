@@ -7,9 +7,11 @@ def main():
         cursor = connection.cursor()
 
         # создаю базу данных с названием "Shelter"
+
         # create_db(cursor, 'Shelter')
 
         # создаю таблицы в БД
+
         create_breed_table(cursor)
         create_type_table(cursor)
         create_colour_table(cursor)
@@ -30,7 +32,9 @@ def main():
         # insert_shelter_info(cursor)
 
         # создаю новых пользователей с разными правами
-        user(cursor, "SELECT", "user3")
+
+        # user(cursor, "SELECT", "user1")
+        # user(cursor, "UPDATE, INSERT", "user_updater")
 
         cursor.close()
 
