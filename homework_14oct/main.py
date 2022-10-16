@@ -1,4 +1,4 @@
-from DB_func import *
+from DB_create import *
 
 
 def main():
@@ -26,8 +26,11 @@ def main():
         # insert_colour_info(cursor)
         # insert_outcome_subtype_info(cursor)
         # insert_outcome_type_info(cursor)
-        insert_animal_info(cursor)
+        # insert_animal_info(cursor)
+        # insert_shelter_info(cursor)
 
+        # создаю новых пользователей с разными правами
+        user(cursor, "SELECT", "user3")
 
         cursor.close()
 

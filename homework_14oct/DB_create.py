@@ -4,6 +4,7 @@ import csv
 
 
 def connect_bd():
+
     """
     Подключает к PGadmin с уже созданной БД
     """
@@ -191,10 +192,10 @@ def create_shelter_table(cursor):
 
 
 def insert_breeds_info(cursor):
-
     """
     Заполняет таблицу breed_dict информацией из файла breed_dict.csv
     """
+
     with open("breed_dict.csv", "r", encoding='utf-8') as f:
         reader = list(csv.reader(f))
 
@@ -212,10 +213,10 @@ def insert_breeds_info(cursor):
 
 
 def insert_type_info(cursor):
-
     """
     Заполняет таблицу type_dict информацией из файла breed_dict.csv
     """
+
     with open("type_dict.csv", "r", encoding='utf-8') as f:
         reader = list(csv.reader(f))
 
@@ -231,11 +232,12 @@ def insert_type_info(cursor):
     except (Exception, Error) as error:
         print("Проблема с загрузкой данных", error)
 
-def insert_colour_info(cursor):
 
+def insert_colour_info(cursor):
     """
     Заполняет таблицу colour_dict информацией из файла breed_dict.csv
     """
+
     with open("colour_dict.csv", "r", encoding='utf-8') as f:
         reader = list(csv.reader(f))
 
@@ -253,10 +255,10 @@ def insert_colour_info(cursor):
 
 
 def insert_outcome_subtype_info(cursor):
-
     """
     Заполняет таблицу outcome_subtype информацией из файла breed_dict.csv
     """
+
     with open("outcome_subtype.csv", "r", encoding='utf-8') as f:
         reader = list(csv.reader(f))
 
@@ -264,7 +266,8 @@ def insert_outcome_subtype_info(cursor):
     val = val.replace("[", "(")
     val = val.replace("]", ")")
 
-    request = f"""INSERT INTO outcome_subtype(id_outcome_subtype, name_outcome_subtype)
+    request = f"""INSERT INTO outcome_subtype(id_outcome_subtype,
+                                              name_outcome_subtype)
                  VALUES {val}
                 """
     try:
@@ -274,10 +277,10 @@ def insert_outcome_subtype_info(cursor):
 
 
 def insert_outcome_type_info(cursor):
-
     """
     Заполняет таблицу outcome_type информацией из файла breed_dict.csv
     """
+
     with open("outcome_type.csv", "r", encoding='utf-8') as f:
         reader = list(csv.reader(f))
 
@@ -285,7 +288,8 @@ def insert_outcome_type_info(cursor):
     val = val.replace("[", "(")
     val = val.replace("]", ")")
 
-    request = f"""INSERT INTO outcome_type(id_outcome_type, name_outcome_type)
+    request = f"""INSERT INTO outcome_type(id_outcome_type, 
+                                            name_outcome_type)
                  VALUES {val}
                 """
     try:
@@ -293,17 +297,19 @@ def insert_outcome_type_info(cursor):
     except (Exception, Error) as error:
         print("Проблема с загрузкой данных", error)
 
-def insert_animal_info(cursor):
 
+def insert_animal_info(cursor):
     """
     Заполняет таблицу animal_dict информацией из файла breed_dict.csv
     """
+
     with open("animal_dict.csv", "r", encoding='utf-8') as f:
         reader = list(csv.reader(f))
 
-    val = ', '.join(map(str, reader))
+    val = ', '.join(map(str, reader[1:]))
     val = val.replace("[", "(")
     val = val.replace("]", ")")
+    val = val.replace('"', "'")
 
     request = f"""INSERT INTO animal_dict(id_animal, 
                                           animal_id, 
@@ -319,3 +325,44 @@ def insert_animal_info(cursor):
         cursor.execute(request)
     except (Exception, Error) as error:
         print("Проблема с загрузкой данных", error)
+
+
+def insert_shelter_info(cursor):
+    """
+    Заполняет таблицу shelter_info информацией из файла breed_dict.csv
+    """
+
+    with open("shelter_info.csv", "r", encoding='utf-8') as f:
+        reader = list(csv.reader(f))
+
+    val = ', '.join(map(str, reader[1:]))
+    val = val.replace("[", "(")
+    val = val.replace("]", ")")
+
+    request = f"""INSERT INTO shelter_info(index,
+                                          fk_animal_id,
+                                          fk_outcome_subtype,
+                                          fk_outcome_type,
+                                          outcome_month,
+                                          outcome_year,
+                                          age_upon_outcome
+                                          )
+                 VALUES {val}
+                """
+    try:
+        cursor.execute(request)
+    except (Exception, Error) as error:
+        print("Проблема с загрузкой данных", error)
+
+
+def user(cursor, privileges: str, username: str):
+
+    request = f"""CREATE USER {username} WITH PASSWORD '1234'"""
+    request2 = f"""GRANT {privileges} ON ALL TABLES in SCHEMA Shelter to {username}"""
+    try:
+        cursor.execute(request)
+        print("Пользователь создан")
+        cursor.execute(request2)
+        print("Права переданы")
+    except (Exception, Error) as error:
+        print(f"Не получилось создать юзера {username}", error)

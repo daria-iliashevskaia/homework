@@ -51,7 +51,7 @@ def animal_dicts_form() -> list:
         animals_dict['id_animal'] = int(animal['index'])
         animals_dict['animal_id'] = animal['animal_id']
         animals_dict['fk_type'] = animal['animal_type']
-        animals_dict['animal_name'] = animal['name']
+        animals_dict['animal_name'] = animal['name'].replace("'", "_")
         animals_dict['fk_breed'] = animal['breed']
         animals_dict['fk_colour_1'] = animal['color1']
         animals_dict['fk_colour_2'] = animal['color2']
@@ -80,7 +80,7 @@ def shelter_dicts_form() -> list:
     for animal in shelter_list:
 
         shelter_dict['index'] = animal['index']
-        shelter_dict['fk_animal_id'] = animal['animal_id']
+        shelter_dict['fk_animal_id'] = animal['index']
         shelter_dict['fk_outcome_subtype'] = animal['outcome_subtype']
         shelter_dict['fk_outcome_type'] = animal['outcome_type']
         shelter_dict['outcome_month'] = animal['outcome_month']
