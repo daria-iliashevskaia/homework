@@ -656,6 +656,9 @@ INSERT INTO suppliers (
             '148 rue Chasseur'
              )
             ;
+
+-- Name: products; Type: Column; Schema: -; Owner: -
+ALTER TABLE products ADD COLUMN fk_suppliers INTEGER;
 -- Update data for Name: products
 UPDATE products SET fk_suppliers = 1 WHERE product_name IN ('Chang', 'Aniseed Syrup');
 UPDATE products SET fk_suppliers = 2 WHERE product_name IN ('Chef Anton''s Cajun Seasoning', 'Chef Anton''s Gumbo Mix', 'Louisiana Fiery Hot Pepper Sauce', 'Louisiana Hot Spiced Okra');
@@ -686,9 +689,6 @@ UPDATE products SET fk_suppliers = 26 WHERE product_name IN ('Gnocchi di nonna A
 UPDATE products SET fk_suppliers = 27 WHERE product_name IN ('Escargots de Bourgogne');
 UPDATE products SET fk_suppliers = 28 WHERE product_name IN ('Raclette Courdavault', 'Camembert Pierrot');
 UPDATE products SET fk_suppliers = 29 WHERE product_name IN ('Sirop d''érable', 'Tarte au sucre');
-
--- Name: products; Type: Column; Schema: -; Owner: -
-ALTER TABLE products ADD COLUMN fk_suppliers INTEGER;
 
 -- Name: suppliers; Type: Column; Schema: -; Owner: -
 ALTER TABLE ONLY suppliers ADD CONSTRAINT pk_suppliers PRIMARY KEY (suppliers_id);

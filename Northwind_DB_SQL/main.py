@@ -55,6 +55,10 @@ def main():
             ;\n""")
             i += 1
 
+        # добавляю дополнительную колонку fk_suppliers в таблицу products
+        file.write("""\n-- Name: products; Type: Column; Schema: -; Owner: -\n""")
+        file.write("""ALTER TABLE products ADD COLUMN fk_suppliers INTEGER;\n""")
+
         # добавляю поле suppliers_id в таблицу products и заполняю его
         i = 1
         file.write("""-- Update data for Name: products\n""")
@@ -64,10 +68,6 @@ def main():
             product = [p.replace("'", "''") for p in dt['products']]
             file.write(f"""UPDATE products SET fk_suppliers = {dt['id']} WHERE product_name IN ('{"', '".join(product)}');\n""")
             i += 1
-
-        # добавляю дополнительную колонку fk_suppliers в таблицу products
-        file.write("""\n-- Name: products; Type: Column; Schema: -; Owner: -\n""")
-        file.write("""ALTER TABLE products ADD COLUMN fk_suppliers INTEGER;\n""")
 
         # добавляю первичные ключи
         file.write("""\n-- Name: suppliers; Type: Column; Schema: -; Owner: -\n""")
