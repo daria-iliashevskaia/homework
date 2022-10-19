@@ -75,7 +75,7 @@ def main():
             file.write(f"""UPDATE products SET fk_suppliers = {dt['id']} WHERE product_name IN ('{"', '".join(product)}');\n""")
             i += 1
 
-        # добавляю первичные ключи
+        # добавляю первичный ключ
         file.write("""\n-- Name: suppliers; Type: Column; Schema: -; Owner: -\n""")
         file.write("""ALTER TABLE ONLY suppliers ADD CONSTRAINT pk_suppliers PRIMARY KEY (suppliers_id);\n""")
 
