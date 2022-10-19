@@ -13,17 +13,17 @@ def main():
         # создаю таблицу suppliers
         file.write(f"""--Name: suppliers; Type: TABLE; Schema: public; Owner: -; Tablespace:\nCREATE TABLE IF NOT EXISTS suppliers (
         suppliers_id INTEGER NOT NULL,
-        company_name VARCHAR (80),
-        contact_name VARCHAR (80),
-        contact_title VARCHAR (80),
-        ad_country VARCHAR (80),
-        ad_state VARCHAR (80),
+        company_name VARCHAR (255),
+        contact_name VARCHAR (255),
+        contact_title VARCHAR (255),
+        ad_country VARCHAR (255),
+        ad_state VARCHAR (255),
         ad_index text,
-        ad_city VARCHAR (80),
-        ad_street VARCHAR (80),
-        phone VARCHAR (80),
-        fax VARCHAR (80),
-        homepage VARCHAR (80)
+        ad_city VARCHAR (255),
+        ad_street VARCHAR (255),
+        phone VARCHAR (255),
+        fax VARCHAR (255),
+        homepage VARCHAR (255)
         );\n\n""")
 
         # заполняю данными таблицу suppliers
@@ -40,7 +40,10 @@ def main():
             ad_state,
             ad_index,
             ad_city,
-            ad_street
+            ad_street,
+            phone,
+            fax,
+            homepage
             )
             VALUES({i}, 
             '{dt['company_name'].replace("'", "_")}', 
@@ -50,7 +53,10 @@ def main():
             '{dt['address'].split('; ')[1]}',
             '{dt['address'].split('; ')[2]}',
             '{dt['address'].split('; ')[3]}',
-            '{dt['address'].split('; ')[4].replace("'", "_")}'
+            '{dt['address'].split('; ')[4].replace("'", "_")}',
+            '{dt['phone']}',
+            '{dt['fax']}',
+            '{dt['homepage'].replace("'", "_")}'
              )
             ;\n""")
             i += 1
