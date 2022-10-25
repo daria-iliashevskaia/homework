@@ -65,7 +65,7 @@ def main():
         file.write("""\n-- Name: products; Type: Column; Schema: -; Owner: -\n""")
         file.write("""ALTER TABLE products ADD COLUMN fk_suppliers INTEGER;\n""")
 
-        # добавляю поле suppliers_id в таблицу products и заполняю его
+        # заполняю поле suppliers_id в таблице products
         i = 1
         file.write("""-- Update data for Name: products\n""")
 
