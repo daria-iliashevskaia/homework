@@ -11,17 +11,24 @@ def users(id):
         id=id
     )
 
+
 # обработчик для вывода списка пользователей с возможностью фильтрации
 @app.route('/users/')
 def all_users():
     users = ['mike', 'mishel', 'adel', 'keks', 'kamila']
     term = request.args.get('term')
-    filtered_users = filter(lambda x: term in x, users)
-    return render_template(
-        'users/index.html',
-        users=filtered_users,
-        search=term
-    )
+    if term is None:
+        return render_template(
+            'users/index.html',
+            users=users
+        )
+    else:
+        filtered_users = filter(lambda x: term in x, users)
+        return render_template(
+            'users/index.html',
+            users=filtered_users,
+            search=term
+        )
 
 
 app.run(debug=True)
