@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+{% for user in users %}
+    <p>{{user}}</p>
+{% endfor %}
+
+<form action="/users" method="get">
+        <input type="search" name="term" value="{{ search }}"/>
+        <input type="submit" value="Search">
+</form>
+
+</body>
+</html>
