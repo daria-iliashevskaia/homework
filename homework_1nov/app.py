@@ -13,7 +13,7 @@ def users(id):
 
 
 # обработчик для вывода списка пользователей с возможностью фильтрации
-@app.route('/users/')
+@app.route('/users')
 def all_users():
     users = ['mike', 'mishel', 'adel', 'keks', 'kamila']
     term = request.args.get('term')
